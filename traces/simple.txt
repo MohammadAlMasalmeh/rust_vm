@@ -1,0 +1,7 @@
+# two processes sharing nothing
+S 1
+R 0x1000
+W 0x1004
+S 2
+R 0x1000
+E 1
