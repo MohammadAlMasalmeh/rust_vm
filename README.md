@@ -33,9 +33,9 @@ E 1
 
 ## Design decisions
 
-- **Context switches live in the trace.** `S 1` means everything after belongs to proc 1 untill the next switch. Basically how real hardware does it, the OS just loads a new page table root (CR3 on x86).
-- **MMU and OS are seperate.** MMU just translates and sets referenced/dirty bits. OS handles switches, exits, page faults, and eviction.
-- **Clock instead of LRU.** Exact LRU is too expensive in real hardware. Trying out Clock (thanks Claude for the recommendation). Reference bit that is set to 1 when a page is accessed, and kick out the one with the reference bit set to 0. On each access when memory is full and we encounter a pagefault, scan for empty reference but also set the reference bit of "valid" pages back to 0 to reset the cycle.
+- **Context Switching:** `S 1` means everything after belongs to proc 1 untill the next switch. Basically how real hardware does it, the OS just loads a new page table root (CR3 on x86).
+- **MMU vs OS:** MMU just translates and sets referenced/dirty bits. OS handles switches, exits, page faults, and eviction.
+- **Clock:** Exact LRU is too expensive in real hardware. Trying out Clock (thanks Claude for the recommendation). Reference bit that is set to 1 when a page is accessed, and kick out the one with the reference bit set to 0. On each access when memory is full and we encounter a pagefault, scan for empty reference but also set the reference bit of "valid" pages back to 0 to reset the cycle.
 
 ## How to run it
 
