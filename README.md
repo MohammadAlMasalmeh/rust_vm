@@ -29,6 +29,8 @@ R 0x1000
 E 1
 ```
 
+- Created the page table tree. Each 9 bits is used as a hash to know which child of the entry to access. Created a map function that can allocate a certain frame to a virtual address. Made lookup that looks up the virtual memory -> page table entry. Unmap just sets the valid bit to 0.
+
 
 
 ## Design decisions
