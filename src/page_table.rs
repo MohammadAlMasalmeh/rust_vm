@@ -73,6 +73,19 @@ impl PageTable{
         None
     }
 
+    pub fn mutable_lookup(&mut self, addr: u64) -> Option<&mut Pte>{
+        let (indices, _) = self.layout.split(addr)?;
+        let mut node = &mut self.root;
+        for&i in &indices{
+            match &mut node.entries[i]{
+                Entry::Empty => return None,
+                Entry::Page(pte) => return Some(pte),
+                Entry::Table(next) => node = next,
+            }
+        }
+        None
+    }
+
     pub fn map(&mut self, addr: u64, frame: usize){
         let (indices, _) = self.layout.split(addr).expect("address out of range");
         let mut node = &mut self.root;
@@ -255,5 +268,13 @@ mod tests {
         let pte = pt.lookup(0x1000).unwrap();
         assert_eq!(pte.frame, 3);
         assert!(pte.valid);
+    }
+
+    #[test]
+    fn unmap_returns_dirty() {
+        let mut pt = PageTable::new(x86());
+        pt.map(0x1000, 7);
+        pt.mutable_lookup(0x1000).unwrap().dirty = true;
+        assert_eq!(pt.unmap(0x1000), Some((7, true)));
     }
 }
